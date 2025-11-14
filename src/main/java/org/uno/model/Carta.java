@@ -5,6 +5,11 @@ public class Carta {
   private int valor;
   private String color;
 
+  public Carta (){
+    this.valor = 0;
+    this.color = null;
+  }
+
   public Carta (int v, String c){
     this.valor = v;
     this.color = c;
@@ -17,8 +22,9 @@ public class Carta {
 
   //para poder comprobar si la carta jugada es válida.
   public boolean mismoColor(Carta carta1) {
-  return false;}
+    return this.getColor().equals(carta1.getColor());
+  }
   public boolean mismoValor(Carta carta1) {
-  return false;}
+    return this.getValor()==carta1.getValor();}
 
 }
