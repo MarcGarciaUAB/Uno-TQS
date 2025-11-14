@@ -9,4 +9,14 @@ public class CartaTest {
     assertEquals("Rojo", carta.getColor());
     assertEquals(5, carta.getValor());
   }
+  @Test
+  void testComprobarIguales(){
+    Carta carta1 = new Carta(5, "Rojo");
+    Carta carta2 = new Carta(7, "Rojo");
+    Carta carta3 = new Carta(5, "Azul");
+
+    assertTrue(carta1.mismoColor(carta2));
+    assertTrue(carta3.mismoValor(carta1));
+    assertFalse(carta2.mismoColor(carta3));
+  }
 }
