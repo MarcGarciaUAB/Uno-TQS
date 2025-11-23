@@ -5,55 +5,58 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ManoTest {
+  Mano mano;
+  Carta cincoRojo;
+  Carta sieteAzul;
+  Carta cincoVerde;
+  Carta especial;
+
+  @BeforeEach
+  void setUp() {
+    mano = new Mano();
+    cincoRojo = new Carta(5, "Rojo");
+    sieteAzul = new Carta(7, "Azul");
+    cincoVerde = new Carta(5, "Verde");
+    especial = new Carta("Change", "Negro");
+  }
+
   @Test
   void testCrearMano() {
-    Mano mano = new Mano();
     assertNotEquals(null, mano);
   }
 
-
   @Test
   void testAñadirCarta() {
-    Mano mano = new Mano();
-    Carta carta = new Carta(5, "Rojo");
-
-    mano.añadirCarta(carta);
+    mano.añadirCarta(cincoRojo);
 
     assertEquals(1, mano.getNumeroCartas());
-    assertTrue(mano.getMano().contains(carta));
+    assertTrue(mano.getMano().contains(cincoRojo));
   }
 
   @Test
   void testEliminarCarta() {
-    Mano mano = new Mano();
-    Carta carta = new Carta(7, "Azul");
-
-    mano.añadirCarta(carta);
-    mano.eliminarCarta(carta);
+    mano.añadirCarta(sieteAzul);
+    mano.eliminarCarta(sieteAzul);
 
     assertEquals(0, mano.getNumeroCartas());
-    assertFalse(mano.getMano().contains(carta));
+    assertFalse(mano.getMano().contains(sieteAzul));
   }
   @Test
   void testGetNumeroCartas() {
-    Mano mano = new Mano();
-
     assertEquals(0, mano.getNumeroCartas());
 
-    mano.añadirCarta(new Carta(2, "Verde"));
-    mano.añadirCarta(new Carta(9, "Azul"));
+    mano.añadirCarta(cincoRojo);
+    mano.añadirCarta(cincoVerde);
     assertEquals(2, mano.getNumeroCartas());
   }
 
 
-
 @Test
   void testTieneCartaJugablePorColor() {
-    Mano mano = new Mano();
-    Carta cartaMesa = new Carta(5, "Rojo");
+    Carta cartaMesa = new Carta(3, "Rojo");
 
-    mano.añadirCarta(new Carta(3, "Rojo"));
-    mano.añadirCarta(new Carta(7, "Azul"));
+    mano.añadirCarta(cincoRojo);
+    mano.añadirCarta(sieteAzul);
 
     //la primera carta debería ser jugable por color
     assertTrue(mano.tieneCartaJugable(cartaMesa));
@@ -61,10 +64,9 @@ class ManoTest {
 
   @Test
   void testTieneCartaJugablePorValor() {
-    Mano mano = new Mano();
-    Carta cartaMesa = new Carta(5, "Verde");
+    Carta cartaMesa = cincoVerde;
 
-    mano.añadirCarta(new Carta(5, "Azul"));
+    mano.añadirCarta(cincoRojo);
 
     //la carta debería ser jugable por valor
     assertTrue(mano.tieneCartaJugable(cartaMesa));
@@ -72,21 +74,19 @@ class ManoTest {
 
   @Test
   void testNoTieneCartaJugable() {
-    Mano mano = new Mano();
     Carta cartaMesa = new Carta(9, "Amarillo");
 
-    mano.añadirCarta(new Carta(3, "Rojo"));
-    mano.añadirCarta(new Carta(7, "Verde"));
+    mano.añadirCarta(cincoRojo);
+    mano.añadirCarta(sieteAzul);
 
     assertFalse(mano.tieneCartaJugable(cartaMesa));
   }
 
   @Test
   void testTieneCartaEspecial() {
-    Mano mano = new Mano();
-    Carta cartaMesa = new Carta(5, "Rojo");
+    Carta cartaMesa = cincoRojo;
 
-    mano.añadirCarta(new Carta("Change", "Negro"));
+    mano.añadirCarta(especial);
 
     //una carta de efecto (en este caso cambio de color) SIEMPRE es jugable.
     assertTrue(mano.tieneCartaJugable(cartaMesa));
