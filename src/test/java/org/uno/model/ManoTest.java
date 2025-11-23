@@ -1,8 +1,7 @@
 package org.uno.model;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class ManoTest {
@@ -21,7 +20,7 @@ class ManoTest {
     mano.añadirCarta(carta);
 
     assertEquals(1, mano.getNumeroCartas());
-    assertTrue(mano.getCartas().contains(carta));
+    assertTrue(mano.getMano().contains(carta));
   }
 
   @Test
@@ -33,7 +32,7 @@ class ManoTest {
     mano.eliminarCarta(carta);
 
     assertEquals(0, mano.getNumeroCartas());
-    assertFalse(mano.getCartas().contains(carta));
+    assertFalse(mano.getMano().contains(carta));
   }
   @Test
   void testGetNumeroCartas() {
