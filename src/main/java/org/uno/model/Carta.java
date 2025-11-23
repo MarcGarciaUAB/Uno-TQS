@@ -38,20 +38,10 @@ public class Carta {
 
   //para poder comprobar si la carta jugada es válida.
   public boolean mismoColor(Carta carta1) {
-    //si el color es negro significa que es carta especial, siempre se puede tirar.
-    if(!carta1.getColor().equals("Negro")) {
       return this.getColor().equals(carta1.getColor());
-    }
-    else
-      return true;
   }
   public boolean mismoValor(Carta carta1) {
-    //si el color es negro significa que es carta especial, siempre se puede tirar.
-    if(!carta1.getColor().equals("Negro")) {
       return this.getValor() == carta1.getValor();
-    }
-    else
-      return true;
   }
 
 }

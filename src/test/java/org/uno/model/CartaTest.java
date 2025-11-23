@@ -29,12 +29,10 @@ public class CartaTest {
     Carta carta1 = new Carta(5, "Rojo");
     Carta carta2 = new Carta(7, "Rojo");
     Carta carta3 = new Carta(5, "Azul");
-    Carta carta4 = new Carta("Change", "Negro");
 
     assertTrue(carta1.mismoColor(carta2));
     assertTrue(carta3.mismoValor(carta1));
     assertFalse(carta2.mismoColor(carta3));
-    assertTrue(carta1.mismoColor(carta4));
   }
 }
 
