@@ -10,7 +10,9 @@ public class Pila {
   public Pila() {
     this.pila = new ArrayList<>();
   }
-
+  public List<Carta> getPila(){
+    return this.pila;
+  }
   public void jugarCarta(Carta carta){
     pila.add(carta);
   }
