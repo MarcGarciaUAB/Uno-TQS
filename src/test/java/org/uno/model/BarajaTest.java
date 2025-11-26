@@ -8,13 +8,13 @@ import static org.mockito.Mockito.mock;
 
 import java.util.List;
 
-
-Myser
 public class BarajaTest {
+  private Krupier mockKrupier;
   Baraja baraja;
 
   @BeforeEach
   void setUp() {
+    mockKrupier = mock(Krupier.class);
     baraja = new Baraja();
   }
 
