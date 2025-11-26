@@ -5,18 +5,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PilaTest {
   Pila pila;
+
   @BeforeEach
   void setUp() {
     pila = new Pila();
   }
+
   @Test
-  void testCrearPila(){
+  void testCrearPila() {
     assertNotEquals(null, pila);
   }
-}
 
-  void testJugarCarta(){
+  @Test
+  void testJugarCarta() {
     Carta cartaJugada = new Carta(5, "Rojo");
     pila.jugarCarta(cartaJugada);
     assertEquals(cartaJugada, pila.ultimaCarta());
   }
+}
