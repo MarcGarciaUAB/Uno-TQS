@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Baraja {
 
+  private Krupier krupier;
   private List<Carta> baraja;
 
   public Baraja() {
@@ -53,6 +54,8 @@ public class Baraja {
 
   public void barajar() {
     //TODO: implementar con mock
+    this.baraja = krupier.barajar(this.baraja);
+
   }
 
   public int tamaño() {
