@@ -4,11 +4,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 import java.util.List;
 
+
 public class BarajaTest {
+  private List<Carta> barajada;
   private Krupier mockKrupier;
   Baraja baraja;
 
@@ -45,7 +48,10 @@ public class BarajaTest {
 
   @Test
   void testBarajar() {
+    //declaramos la baraja con las cartas específicas que queremos
+    barajada.add(new Carta(0, "Rojo"));
     List<Carta> antes = List.copyOf(baraja.getBaraja());
+    when(mockKrupier.barajar(antes)).thenReturn(barajada);
     baraja.barajar();
 
     List<Carta> despues = baraja.getBaraja();
