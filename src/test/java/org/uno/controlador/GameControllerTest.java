@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.List;
-import java.util.ArrayList;
 
 public class GameControllerTest {
 
@@ -58,6 +57,7 @@ public class GameControllerTest {
 
   @Test
   void testJugarTurno() {
+      //puede jugar la carta
     Carta carta = new Carta(5, "Rojo");
     jugador1.añadirCarta(carta);
     pila.jugarCarta(new Carta(3, "Rojo"));
@@ -66,6 +66,20 @@ public class GameControllerTest {
 
     assertTrue(jugado);
     assertEquals(0, jugador1.getNumeroCartas());
+
+    //no puede jugar una carta, por lo tanto debe robar
+    Carta carta1 = new Carta(2, "Azul");
+    jugador1.añadirCarta(carta1);
+    pila.jugarCarta(new Carta(5, "Rojo"));
+
+    Carta robada = new Carta(7, "Rojo");
+    when(mockBaraja.robar()).thenReturn(robada);
+
+    jugado = controlador.jugarTurno(jugador1);
+
+    assertFalse(jugado);
+    assertTrue(jugador1.getMano().contains(robada));
+    assertEquals(2, jugador1.getNumeroCartas());
   }
 
 }
