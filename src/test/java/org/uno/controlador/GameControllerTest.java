@@ -55,4 +55,17 @@ public class GameControllerTest {
 
       assertFalse(controlador.esCartaValida(carta, jugador1));
     }
+
+  @Test
+  void testJugarTurno() {
+    Carta carta = new Carta(5, "Rojo");
+    jugador1.añadirCarta(carta);
+    pila.jugarCarta(new Carta(3, "Rojo"));
+
+    boolean jugado = controlador.jugarTurno(jugador1);
+
+    assertTrue(jugado);
+    assertEquals(0, jugador1.getNumeroCartas());
   }
+
+}
