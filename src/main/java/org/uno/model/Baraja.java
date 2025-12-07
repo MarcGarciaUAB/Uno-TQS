@@ -18,6 +18,12 @@ public class Baraja {
     return baraja.size();
   }
 
+  public void añadirCartas(List<Carta> cartas) {
+    if (cartas != null && !cartas.isEmpty()) {
+      this.baraja.addAll(cartas);
+    }
+  }
+
   public List<Carta> getBaraja() {
     return new ArrayList<>(baraja);
   }

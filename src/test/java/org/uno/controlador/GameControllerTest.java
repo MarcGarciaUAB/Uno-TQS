@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameControllerTest {
@@ -80,6 +81,28 @@ public class GameControllerTest {
     assertFalse(jugado);
     assertTrue(jugador1.getMano().contains(robada));
     assertEquals(2, jugador1.getNumeroCartas());
+
+    //no puede jugar una carta y la baraja está vacía, por lo tanto, hay que reutilizar la pila
+    Carta carta2 = new Carta(1, "Verde");
+    jugador1.añadirCarta(carta2);
+    Carta cartaEnPila = new Carta(9, "Amarillo");
+    pila.jugarCarta(cartaEnPila);
+
+    // Simulamos baraja vacía
+    when(mockBaraja.robar()).thenReturn(null);
+    List<Carta> pilaCopiada = new ArrayList<>(pila.getPila());
+
+    // Es la unica manera de poder mockear metodos void
+    doAnswer(invocation -> {
+      mockBaraja.añadirCartas(pilaCopiada);
+      return null;
+    }).when(mockBaraja).barajar();
+
+    jugado = controlador.jugarTurno(jugador1);
+    assertFalse(jugado);
+
+    assertEquals(0, pila.getPila().size());
+
   }
 
 }
