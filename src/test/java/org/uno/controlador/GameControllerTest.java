@@ -104,5 +104,18 @@ public class GameControllerTest {
     assertEquals(0, pila.getPila().size());
 
   }
+  @Test
+  void testSiguienteJugador() {
+    // Turno inicial
+    assertEquals(jugador1, controlador.getJugadorActual());
+
+    // Avanzar turno
+    controlador.siguienteJugador();
+    assertEquals(jugador2, controlador.getJugadorActual());
+
+    // Volver al primer jugador
+    controlador.siguienteJugador();
+    assertEquals(jugador1, controlador.getJugadorActual());
+  }
 
 }
