@@ -29,8 +29,14 @@ public class GameController {
       if (esCartaValida(c, jugador)) {
         jugador.eliminarCarta(c);
         pila.jugarCarta(c);
+        aplicarEfecto(c, jugador); //si es block, +2, etc. aplicar el efecto especial
         return true;
       }
+    }
+    // Si no podia jugar, roba una carta
+    Carta robada = baraja.robar();
+    if (robada != null) {
+      jugador.añadirCarta(robada);
     }
     return false;
   }
