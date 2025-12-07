@@ -9,21 +9,35 @@ public class GameController {
     private Baraja baraja;
     private Pila pila;
     private List<Mano> jugadores;
+    private int turnoActual = 0;
+    private boolean sentidoHorario = true;
 
-    public GameController(Baraja baraja, Pila pila, List<Mano> jugadores) {
+
+  public GameController(Baraja baraja, Pila pila, List<Mano> jugadores) {
       this.baraja = baraja;
       this.pila = pila;
       this.jugadores = jugadores;
     }
-
-    public boolean esCartaValida(Carta carta, Mano jugador) {
-      Carta cartaEnPila = pila.ultimaCarta();
-      if (jugador.tieneCartaJugable(cartaEnPila)) {
-        return carta.mismoColor(cartaEnPila) || carta.mismoValor(cartaEnPila);
-      }
-      else
-        return false;
+  public Mano getJugadorActual() {
+    return jugadores.get(turnoActual);
+  }
+  public void siguienteJugador() {
+    if (sentidoHorario) {
+      //si llega al final, vuelve a 0
+      turnoActual = (turnoActual + 1) % jugadores.size();
+    } else {
+      //para los cambios de sentido
+      turnoActual = (turnoActual - 1 + jugadores.size()) % jugadores.size();
     }
+  }
+  public boolean esCartaValida(Carta carta, Mano jugador) {
+    Carta cartaEnPila = pila.ultimaCarta();
+    if (jugador.tieneCartaJugable(cartaEnPila)) {
+      return carta.mismoColor(cartaEnPila) || carta.mismoValor(cartaEnPila);
+    }
+    else
+      return false;
+  }
 
   public boolean jugarTurno(Mano jugador) {
     for (Carta c : jugador.getMano()) {
