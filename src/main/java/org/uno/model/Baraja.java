@@ -8,9 +8,10 @@ public class Baraja {
   private Krupier krupier;
   private List<Carta> baraja;
 
-  public Baraja() {
+  public Baraja(Krupier k) {
     this.baraja = new ArrayList<>();
     crearBaraja();
+    this.krupier = k;
   }
 
   public int getNumeroCartas() {
@@ -18,7 +19,11 @@ public class Baraja {
   }
 
   public List<Carta> getBaraja() {
-    return baraja;
+    return new ArrayList<>(baraja);
+  }
+
+  public void setKrupier(Krupier krupier) {
+    this.krupier = krupier;
   }
 
   private void crearBaraja() {
@@ -53,7 +58,6 @@ public class Baraja {
   }
 
   public void barajar() {
-    //TODO: implementar con mock
     this.baraja = krupier.barajar(this.baraja);
 
   }
