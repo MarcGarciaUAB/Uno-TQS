@@ -23,4 +23,16 @@ public class GameController {
       else
         return false;
     }
+
+  public boolean jugarTurno(Mano jugador) {
+    for (Carta c : jugador.getMano()) {
+      if (esCartaValida(c, jugador)) {
+        jugador.eliminarCarta(c);
+        pila.jugarCarta(c);
+        return true;
+      }
+    }
+    return false;
   }
+
+}
