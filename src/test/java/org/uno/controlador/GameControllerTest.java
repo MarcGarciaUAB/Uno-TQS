@@ -56,5 +56,3 @@ public class GameControllerTest {
       assertFalse(controlador.esCartaValida(carta, jugador1));
     }
   }
-
-}
