@@ -2,6 +2,7 @@ package org.uno.controlador;
 
 import org.uno.model.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameController {
@@ -35,9 +36,18 @@ public class GameController {
     }
     // Si no podia jugar, roba una carta
     Carta robada = baraja.robar();
-    if (robada != null) {
-      jugador.añadirCarta(robada);
+    if (robada == null) {
+      List<Carta> cartasPila = new ArrayList<>(pila.getPila());
+      if (!cartasPila.isEmpty()) {
+        // Se añaden las cartas de la pila a la baraja
+        baraja.añadirCartas(cartasPila);
+        pila.vaciar();
+        baraja.barajar();
+        robada = baraja.robar();
+      }
     }
+    if (robada != null)
+      jugador.añadirCarta(robada);
     return false;
   }
 

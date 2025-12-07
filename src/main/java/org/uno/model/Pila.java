@@ -16,7 +16,9 @@ public class Pila {
   public void jugarCarta(Carta carta){
     pila.add(carta);
   }
-
+  public void vaciar() {
+    pila.clear();
+  }
   public Carta ultimaCarta(){
     return pila.getLast();
   }
