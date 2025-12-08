@@ -86,7 +86,15 @@ public class GameController {
         jugadores.get(turnoActual).añadirCarta(baraja.robar());
         jugadores.get(turnoActual).añadirCarta(baraja.robar());
         break;
+
+      case "+4":
+        siguienteJugador();
+        for (int i = 0; i < 4; i++) {
+          jugadores.get(turnoActual).añadirCarta(baraja.robar());
+        }
+        break;
     }
+
   }
 
 
