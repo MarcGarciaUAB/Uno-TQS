@@ -139,4 +139,13 @@ public class GameControllerTest {
     //pasa a ser el jugador 2, no el 3, ya que fuera de esta función saltará de turno de nuevo.
     assertEquals(jugador2, controlador.getJugadorActual());
   }
+  @Test
+  void testMas2HaceRobar() {
+    Carta mas2 = new Carta("+2", "Rojo");
+    // Simulamos robo
+    when(mockBaraja.robar()).thenReturn(new Carta(1,"Azul"), new Carta(2,"Verde"));
+    controlador.aplicarEfecto(mas2, jugador1);
+    // jugador2 debería tener 2 cartas
+    assertEquals(2, jugador2.getNumeroCartas());
+  }
 }
