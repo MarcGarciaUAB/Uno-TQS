@@ -17,7 +17,6 @@ public class GameControllerTest {
     private Mano jugador1;
     private Mano jugador2;
     private Mano jugador3;
-    private String colorActual;
 
     @BeforeEach
     void setUp() {

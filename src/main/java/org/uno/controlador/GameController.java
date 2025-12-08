@@ -11,6 +11,7 @@ public class GameController {
     private List<Mano> jugadores;
     private int turnoActual = 0;
     private boolean sentidoHorario = true;
+    private String colorActual = null;
 
 
   public GameController(Baraja baraja, Pila pila, List<Mano> jugadores) {
@@ -24,6 +25,11 @@ public class GameController {
   public Mano getJugadorActual() {
     return jugadores.get(turnoActual);
   }
+
+  public String getColorActual() {
+    return colorActual;
+  }
+
   public void siguienteJugador() {
     if (sentidoHorario) {
       //si llega al final, vuelve a 0
@@ -35,11 +41,19 @@ public class GameController {
   }
   public boolean esCartaValida(Carta carta, Mano jugador) {
     Carta cartaEnPila = pila.ultimaCarta();
-    if (jugador.tieneCartaJugable(cartaEnPila)) {
-      return carta.mismoColor(cartaEnPila) || carta.mismoValor(cartaEnPila);
+    if (!jugador.tieneCartaJugable(cartaEnPila)) return false;
+
+    //hay que mirar primero si ha habido cambio de color
+    if (colorActual != null && !colorActual.isEmpty()) {
+      return carta.getColor().equals(colorActual) || carta.mismoValor(cartaEnPila);
     }
-    else
-      return false;
+    //si no ha habido cambio de color se usa el de la pila (deberia ser el mismo que la pila pero el primer turno es null)
+    return carta.mismoColor(cartaEnPila) || carta.mismoValor(cartaEnPila);
+  }
+
+
+  public void cambiarColor(String color) {
+    this.colorActual = color;
   }
 
   public boolean jugarTurno(Mano jugador) {
@@ -48,6 +62,11 @@ public class GameController {
         jugador.eliminarCarta(c);
         pila.jugarCarta(c);
         aplicarEfecto(c, jugador); //si es block, +2, etc. aplicar el efecto especial
+        //si la carta es negra hay que pedirsela al jugador
+        if (!c.getColor().equals("Negro")) {
+          colorActual = c.getColor();
+        }
+
         return true;
       }
     }
