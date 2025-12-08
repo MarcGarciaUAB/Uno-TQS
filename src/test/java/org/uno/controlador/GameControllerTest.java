@@ -17,6 +17,7 @@ public class GameControllerTest {
     private Mano jugador1;
     private Mano jugador2;
     private Mano jugador3;
+    private String colorActual;
 
     @BeforeEach
     void setUp() {
@@ -162,4 +163,19 @@ public class GameControllerTest {
 
     assertEquals(4, jugador2.getNumeroCartas());
   }
+  //cambiar el color se debe hacer fuera del switch/case de aplicar efecto, ya que se recibe de fuera
+  //tanto por test como por interfaz de usuario (mediante numeros mismo, por terminal)
+  @Test
+  void testChangeCambiaColor() {
+    Carta change = new Carta("Change", "Negro");
+
+    jugador1.añadirCarta(change);
+    pila.jugarCarta(new Carta(5, "Rojo"));
+    controlador.jugarTurno(jugador1);
+
+    controlador.cambiarColor("Azul");
+
+    assertEquals("Azul", controlador.getColorActual());
+  }
+
 }
