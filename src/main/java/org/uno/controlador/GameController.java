@@ -48,7 +48,6 @@ public class GameController {
         jugador.eliminarCarta(c);
         pila.jugarCarta(c);
         aplicarEfecto(c, jugador); //si es block, +2, etc. aplicar el efecto especial
-        this.siguienteJugador();
         return true;
       }
     }
@@ -69,7 +68,7 @@ public class GameController {
     this.siguienteJugador();
     return false;
   }
-  
+
   public void aplicarEfecto(Carta carta, Mano jugador) {
     if (carta.getEfecto() == null) return;
 
@@ -83,7 +82,11 @@ public class GameController {
         this.siguienteJugador();
         break;
 
-
+      case "+2":
+        siguienteJugador();
+        jugadores.get(turnoActual).añadirCarta(baraja.robar());
+        jugadores.get(turnoActual).añadirCarta(baraja.robar());
+        break;
     }
   }
 
