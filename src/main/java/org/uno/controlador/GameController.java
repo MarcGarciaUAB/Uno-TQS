@@ -18,6 +18,9 @@ public class GameController {
       this.pila = pila;
       this.jugadores = jugadores;
     }
+
+  public boolean getSentidoHorario(){return this.sentidoHorario;}
+
   public Mano getJugadorActual() {
     return jugadores.get(turnoActual);
   }
@@ -45,6 +48,7 @@ public class GameController {
         jugador.eliminarCarta(c);
         pila.jugarCarta(c);
         aplicarEfecto(c, jugador); //si es block, +2, etc. aplicar el efecto especial
+        this.siguienteJugador();
         return true;
       }
     }
@@ -62,8 +66,10 @@ public class GameController {
     }
     if (robada != null)
       jugador.añadirCarta(robada);
+    this.siguienteJugador();
     return false;
   }
+  
   public void aplicarEfecto(Carta carta, Mano jugador) {
     if (carta.getEfecto() == null) return;
 
@@ -72,6 +78,12 @@ public class GameController {
       case "Reverse":
         sentidoHorario = !sentidoHorario;
         break;
+
+      case "Block":
+        this.siguienteJugador();
+        break;
+
+
     }
   }
 
