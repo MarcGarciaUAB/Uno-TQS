@@ -4,54 +4,100 @@ public class Carta {
 
   private int valor;
   private String color;
-  //efectos disponibles: bloquear turno="Block", revertir orden="Reverse", sumar dos cartas="+2"
-  //efectos especiales: cambiar color="Change", sumar cuatro cartas y cambiar color="+4"
-  private String efecto;
+  private String efecto; // efectos especiales: "Block", "Reverse", "+2", "Change", "+4"
 
-  public Carta (){
-    //el 0 es válido
-    this.valor = -1;
-    this.color = null;
-    this.efecto = null;
+  // Invariante: valor >= -1, valor < 10, color != null si valor >=0 o efecto != null, efecto = null si valor != -1
+  private void Invariante() {
+    assert valor >= -1 : "Invariante: valor >= -1";
+    assert valor <10 : "Invariante: valor < 10";
+    assert color != null || efecto != null : "Invariante: color o efecto no puede ser null";
+    if(valor != -1) assert efecto == null : "Invariante: carta numerica no tiene efecto";
   }
 
-  public Carta (int v, String c){
+  public Carta() {
+	  //creamos un cambia color por default para cumplir la invariante
+    this.valor = -1;
+    this.color = "Negro";
+    this.efecto = "Change";
+    Invariante();
+  }
+
+  public Carta(int v, String c) {
+    assert v >= 0 && v <= 9 : "Precondicion: valor entre 0 y 9";
+    assert c != null : "Precondicion: color no puede ser null";
+
     this.valor = v;
     this.color = c;
     this.efecto = null;
+    Invariante();
+
+    assert getValor() == v : "Postcondicion: valor seteado";
+    assert getColor().equals(c) : "Postcondicion: color seteado";
+    assert getEfecto() == null : "Postcondicion: efecto null";
   }
 
-  public Carta (String e, String c){
+  public Carta(String e, String c) {
+    assert e != null && ("Block".equals(e) || "Reverse".equals(e) || "+2".equals(e) || "Change".equals(e) || "+4".equals(e)) : "Precondicion: efecto valido";
+    assert c != null : "Precondicion: color no puede ser null";
+
     this.efecto = e;
     this.color = c;
     this.valor = -1;
+    Invariante();
+
+    assert getEfecto().equals(e) : "Postcondicion: efecto seteado";
+    assert getColor().equals(c) : "Postcondicion: color seteado";
+    assert getValor() == -1 : "Postcondicion: valor -1";
   }
 
-  public void setValor(int v){this.valor = v;};
-  public int getValor(){return this.valor;};
+  public void setValor(int v){
+    assert v >= 0 && v <= 9 : "Precondicion: valor entre 0 y 9";
+    this.valor = v;
+    Invariante();
+    assert this.valor == v : "Postcondicion: valor seteado";
+  }
 
-  public void setColor(String c){ this.color = c;};
-  public String getColor(){return this.color;};
+  public int getValor(){ return this.valor; }
 
-  public void setEfecto(String e){ this.efecto = e;};
-  public String getEfecto(){return this.efecto;};
+  public void setColor(String c){
+    assert c != null : "Precondicion: color no null";
+    this.color = c;
+    Invariante();
+    assert this.color.equals(c) : "Postcondicion: color seteado";
+  }
 
-  //para poder comprobar si la carta jugada es válida.
+  public String getColor(){ return this.color; }
+
+  public void setEfecto(String e){
+    assert e != null && ("Block".equals(e) || "Reverse".equals(e) || "+2".equals(e) || "Change".equals(e) || "+4".equals(e)) : "Precondicion: efecto valido";
+    this.efecto = e;
+    Invariante();
+    assert this.efecto.equals(e) : "Postcondicion: efecto seteado";
+  }
+
+  public String getEfecto(){ return this.efecto; }
+
   public boolean mismoColor(Carta carta1) {
-      return this.getColor().equals(carta1.getColor());
+    assert carta1 != null : "Pre: carta no null";
+    assert carta1.getColor() != null : "Pre: carta.color no null";
+
+    boolean resultado = this.getColor().equals(carta1.getColor());
+
+    assert resultado == (this.color.equals(carta1.color)) : "Post: resultado coincide con colores";
+    return resultado;
   }
+
   public boolean mismoValor(Carta carta1) {
-    if (valor==-1)
-      return false;
-    return this.getValor() == carta1.getValor();
+    assert carta1 != null : "Pre: carta no null";
+
+    if (valor == -1) return false;
+    boolean resultado = this.valor == carta1.getValor();
+    assert resultado == (this.valor == carta1.valor) : "Post: resultado coincide con valores";
+    return resultado;
   }
+
   @Override
   public String toString() {
-    if (efecto != null) {
-      return "[" + efecto + " - " + color + "]";
-    } else {
-      return "[" + valor + " - " + color + "]";
-    }
+    return (efecto != null) ? "[" + efecto + " - " + color + "]" : "[" + valor + " - " + color + "]";
   }
-
 }
