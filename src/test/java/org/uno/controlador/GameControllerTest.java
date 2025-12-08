@@ -192,9 +192,7 @@ public class GameControllerTest {
 
     controlador.siguienteJugador();//que el turno sea de jugador2
     controlador.jugarTurno(jugador2);
-
-    //ahora deberá elegir automáticamente el rojo, ya que es el color mayoritario
-    controlador.cambiarColor(controlador.elegirColorBot(jugador2));
+    //eliminamos la parte de cambiar color aquí, ya que debe hacerlo el juego por su cuenta.
 
     assertEquals("Rojo", controlador.getColorActual());
   }
