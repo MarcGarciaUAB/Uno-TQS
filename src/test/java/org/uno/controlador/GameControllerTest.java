@@ -208,4 +208,18 @@ public class GameControllerTest {
     assertEquals(jugador1, ganador);
   }
 
+  @Test
+  void testFinJuego() {
+    jugador1.añadirCarta(new Carta(1, "Verde"));
+    jugador2.añadirCarta(new Carta(3, "Verde"));
+    jugador3.añadirCarta(new Carta(4, "Verde"));
+    pila.jugarCarta(new Carta(2, "Verde"));
+
+    controlador.siguienteJugador(); // turno jugador2
+    controlador.procesarTurnoPartida();
+
+    assertTrue(controlador.finJuego());
+  }
+
+
 }
