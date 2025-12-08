@@ -115,6 +115,25 @@ public class GameController {
     }
 
   }
+  public String elegirColorBot(Mano jugador) {
+    int r = 0, b = 0, g = 0, y = 0;
+
+    for (Carta c : jugador.getMano()) {
+      switch (c.getColor()) {
+        case "Rojo":     r++; break;
+        case "Azul":     b++; break;
+        case "Verde":    g++; break;
+        case "Amarillo": y++; break;
+      }
+    }
+    //Math.max calcula el maximo entre dos elementos
+    int max = Math.max(Math.max(r, b), Math.max(g, y));
+
+    if (max == r) return "Rojo";
+    if (max == b) return "Azul";
+    if (max == g) return "Verde";
+    return "Amarillo";
+  }
 
 
 }
