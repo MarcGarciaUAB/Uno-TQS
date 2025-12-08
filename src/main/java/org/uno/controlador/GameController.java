@@ -64,5 +64,16 @@ public class GameController {
       jugador.añadirCarta(robada);
     return false;
   }
+  private void aplicarEfecto(Carta carta, Mano jugador) {
+    if (carta.getEfecto() == null) return;
+
+    switch (carta.getEfecto()) {
+
+      case "Reverse":
+        sentidoHorario = !sentidoHorario;
+        break;
+    }
+  }
+
 
 }
