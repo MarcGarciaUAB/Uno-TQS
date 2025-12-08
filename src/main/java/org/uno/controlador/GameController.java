@@ -40,6 +40,8 @@ public class GameController {
     }
   }
   public boolean esCartaValida(Carta carta, Mano jugador) {
+    //hay que asegurarse que las cartas negras sean jugables
+    if ("Negro".equals(carta.getColor())) return true;
     Carta cartaEnPila = pila.ultimaCarta();
     if (!jugador.tieneCartaJugable(cartaEnPila)) return false;
 
@@ -62,9 +64,15 @@ public class GameController {
         jugador.eliminarCarta(c);
         pila.jugarCarta(c);
         aplicarEfecto(c, jugador); //si es block, +2, etc. aplicar el efecto especial
+
         //si la carta es negra hay que pedirsela al jugador
         if (!c.getColor().equals("Negro")) {
           colorActual = c.getColor();
+        }
+        else {
+          if (jugador != jugadores.get(0)) {
+            colorActual = elegirColorBot(jugador);
+          }
         }
 
         return true;
