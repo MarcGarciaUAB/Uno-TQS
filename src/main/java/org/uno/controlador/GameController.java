@@ -65,7 +65,6 @@ public class GameController {
     }
     if (robada != null)
       jugador.añadirCarta(robada);
-    this.siguienteJugador();
     return false;
   }
 
