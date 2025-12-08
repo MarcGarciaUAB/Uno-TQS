@@ -148,4 +148,18 @@ public class GameControllerTest {
     // jugador2 debería tener 2 cartas
     assertEquals(2, jugador2.getNumeroCartas());
   }
+  @Test
+  void testMas4HaceRobar() {
+    Carta mas4 = new Carta("+4", "Negro");
+    when(mockBaraja.robar()).thenReturn(
+        new Carta(1,"Azul"),
+        new Carta(2,"Verde"),
+        new Carta(3,"Rojo"),
+        new Carta(4,"Amarillo")
+    );
+
+    controlador.aplicarEfecto(mas4, jugador1);
+
+    assertEquals(4, jugador2.getNumeroCartas());
+  }
 }
