@@ -41,7 +41,7 @@ public class GameControllerTest {
 
       // Carta visible en la pila
       Carta cartaEnPila = new Carta(3, "Rojo");
-      pila.jugarCarta(cartaEnPila);
+      controlador.iniciarPila(cartaEnPila);
 
       // Comprobamos que el jugador puede jugar la carta
       assertTrue(controlador.esCartaValida(carta, jugador1));
@@ -63,14 +63,14 @@ public class GameControllerTest {
       //puede jugar la carta
     Carta carta = new Carta(5, "Rojo");
     jugador1.añadirCarta(carta);
-    pila.jugarCarta(new Carta(3, "Rojo"));
+    controlador.iniciarPila(new Carta(3, "Rojo"));
 
     boolean jugado = controlador.jugarTurno(jugador1);
-
     assertTrue(jugado);
     assertEquals(0, jugador1.getNumeroCartas());
+    assertEquals(carta, pila.ultimaCarta());
 
-    //no puede jugar una carta, por lo tanto debe robar
+    // Jugador no puede jugar y debe robar
     Carta carta1 = new Carta(2, "Azul");
     jugador1.añadirCarta(carta1);
     pila.jugarCarta(new Carta(5, "Rojo"));
@@ -79,32 +79,30 @@ public class GameControllerTest {
     when(mockBaraja.robar()).thenReturn(robada);
 
     jugado = controlador.jugarTurno(jugador1);
-
     assertFalse(jugado);
     assertTrue(jugador1.getMano().contains(robada));
     assertEquals(2, jugador1.getNumeroCartas());
-
-    //no puede jugar una carta y la baraja está vacía, por lo tanto, hay que reutilizar la pila
+    jugador1.eliminarCarta(robada);
+    jugador1.eliminarCarta(carta1);
+    // Baraja vacía y se reinicia con la pila
     Carta carta2 = new Carta(1, "Verde");
     jugador1.añadirCarta(carta2);
-    Carta cartaEnPila = new Carta(9, "Amarillo");
-    pila.jugarCarta(cartaEnPila);
+    Carta ultimaEnPila = new Carta(9, "Amarillo");
+    pila.jugarCarta(ultimaEnPila);
 
-    // Simulamos baraja vacía
     when(mockBaraja.robar()).thenReturn(null);
     List<Carta> pilaCopiada = new ArrayList<>(pila.getPila());
 
-    // Es la unica manera de poder mockear metodos void
     doAnswer(invocation -> {
-      mockBaraja.añadirCartas(pilaCopiada);
+      mockBaraja.añadirCartas(pilaCopiada.subList(0, pilaCopiada.size() - 1)); // excluimos última
       return null;
     }).when(mockBaraja).barajar();
 
     jugado = controlador.jugarTurno(jugador1);
     assertFalse(jugado);
-
-    assertEquals(0, pila.getPila().size());
-
+    // La última carta siempre debe quedarse en la pila
+    assertEquals(1, pila.getPila().size());
+    assertEquals(ultimaEnPila, pila.ultimaCarta());
   }
   @Test
   void testSiguienteJugador() {
@@ -202,7 +200,7 @@ public class GameControllerTest {
     // Preparamos jugador1 con solo una carta jugable
     Carta cartaFinal = new Carta(5, "Rojo");
     jugador1.añadirCarta(cartaFinal);
-    pila.jugarCarta(new Carta(3, "Rojo"));
+    controlador.iniciarPila(new Carta(3, "Rojo"));
 
     Mano ganador = controlador.procesarTurnoPartida();
     assertEquals(jugador1, ganador);
@@ -213,7 +211,7 @@ public class GameControllerTest {
     jugador1.añadirCarta(new Carta(1, "Verde"));
     jugador2.añadirCarta(new Carta(3, "Verde"));
     jugador3.añadirCarta(new Carta(4, "Verde"));
-    pila.jugarCarta(new Carta(2, "Verde"));
+    controlador.iniciarPila(new Carta(2, "Verde"));
 
     controlador.siguienteJugador(); // turno jugador2
     controlador.procesarTurnoPartida();

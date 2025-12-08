@@ -88,14 +88,9 @@ public class GameController {
 
   public Carta robarCarta(Mano jugador) {
     Carta robada = baraja.robar();
-    if (robada == null) {
-      List<Carta> cartasPila = new ArrayList<>(pila.getPila());
-      if (!cartasPila.isEmpty()) {
-        baraja.añadirCartas(cartasPila);
-        pila.vaciar();
-        baraja.barajar();
-        robada = baraja.robar();
-      }
+    if (robada == null && !pila.getPila().isEmpty()) {
+      reiniciarPila();
+      robada = baraja.robar();
     }
     if (robada != null) {
       jugador.añadirCarta(robada);
@@ -104,9 +99,25 @@ public class GameController {
   }
 
 
+
   public void cambiarColor(String color) {
     this.colorActual = color;
   }
+
+  private void reiniciarPila() {
+    List<Carta> cartasPila = new ArrayList<>(pila.getPila());
+    if (cartasPila.size() <= 1) return; // nada que hacer si solo hay 1 carta
+    Carta ultima = pila.ultimaCarta();
+    cartasPila.remove(ultima);
+    baraja.añadirCartas(cartasPila);
+    pila.vaciar();
+    pila.jugarCarta(ultima);
+    // mantener colorActual igual que la última carta
+    if (!"Negro".equals(ultima.getColor())) {
+      colorActual = ultima.getColor();
+    }
+  }
+
 //update: esta funcion es solo para bots.
   public boolean jugarTurno(Mano jugador) {
     for (Carta c : jugador.getMano()) {
@@ -129,15 +140,9 @@ public class GameController {
     }
     // Si no podia jugar, roba una carta
     Carta robada = baraja.robar();
-    if (robada == null) {
-      List<Carta> cartasPila = new ArrayList<>(pila.getPila());
-      if (!cartasPila.isEmpty()) {
-        // Se añaden las cartas de la pila a la baraja
-        baraja.añadirCartas(cartasPila);
-        pila.vaciar();
-        baraja.barajar();
-        robada = baraja.robar();
-      }
+    if (robada == null && !pila.getPila().isEmpty()) {
+      reiniciarPila();
+      robada = baraja.robar();
     }
     if (robada != null)
       jugador.añadirCarta(robada);
@@ -174,14 +179,16 @@ public class GameController {
 
   public Mano procesarTurnoPartida() {
     Mano jugador = getJugadorActual();
-    jugarTurno(jugador);
+    boolean jugado = jugarTurno(jugador);
+
     if (jugador.getNumeroCartas() == 0) {
       return jugador;
     }
+
     siguienteJugador();
-    //por si no ha ganado nadie todavía
     return null;
   }
+
   public boolean finJuego() {
     for (Mano jugador : jugadores) {
       if (jugador.getNumeroCartas() == 0) return true;
