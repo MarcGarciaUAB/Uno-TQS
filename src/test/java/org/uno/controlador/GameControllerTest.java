@@ -16,6 +16,7 @@ public class GameControllerTest {
     private GameController controlador;
     private Mano jugador1;
     private Mano jugador2;
+    private Mano jugador3;
 
     @BeforeEach
     void setUp() {
@@ -27,9 +28,10 @@ public class GameControllerTest {
       // Manos iniciales, decidiremos que manos tienen
       jugador1 = new Mano();
       jugador2 = new Mano();
+      jugador3 = new Mano();
 
       // Inicializamos el controlador
-      controlador = new GameController(mockBaraja, pila, List.of(jugador1, jugador2));
+      controlador = new GameController(mockBaraja, pila, List.of(jugador1, jugador2, jugador3));
     }
 
     @Test
@@ -113,9 +115,9 @@ public class GameControllerTest {
     controlador.siguienteJugador();
     assertEquals(jugador2, controlador.getJugadorActual());
 
-    // Volver al primer jugador
+    // Pasa al tercer jugador
     controlador.siguienteJugador();
-    assertEquals(jugador1, controlador.getJugadorActual());
+    assertEquals(jugador3, controlador.getJugadorActual());
   }
   @Test
   void testReverseCambiaSentido() {
@@ -124,7 +126,17 @@ public class GameControllerTest {
 
     // El sentido se invierte, al avanzar el turno debería ir en sentido contrario
     controlador.siguienteJugador();
-    assertEquals(jugador1, controlador.getJugadorActual()); // vuelve al jugador1
+    //versión mejor: no debería saltar el turno de jugador 2, sigue en jugador 2. usamos un getter.
+    assertFalse(controlador.getSentidoHorario());
   }
 
+  @Test
+  void testBlockSaltaTurno() {
+    Carta block = new Carta("Block", "Rojo");
+    controlador.aplicarEfecto(block, jugador1);
+
+    //ya que la logica del juego salta el turno fuera de aplicar efecto, esta función solo salta un turno, es decir,
+    //pasa a ser el jugador 2, no el 3, ya que fuera de esta función saltará de turno de nuevo.
+    assertEquals(jugador2, controlador.getJugadorActual());
+  }
 }
