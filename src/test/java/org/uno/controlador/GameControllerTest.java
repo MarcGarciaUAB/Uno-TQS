@@ -117,5 +117,14 @@ public class GameControllerTest {
     controlador.siguienteJugador();
     assertEquals(jugador1, controlador.getJugadorActual());
   }
+  @Test
+  void testReverseCambiaSentido() {
+    Carta reverse = new Carta("Reverse", "Rojo");
+    controlador.aplicarEfecto(reverse, jugador1);
+
+    // El sentido se invierte, al avanzar el turno debería ir en sentido contrario
+    controlador.siguienteJugador();
+    assertEquals(jugador1, controlador.getJugadorActual()); // vuelve al jugador1
+  }
 
 }
