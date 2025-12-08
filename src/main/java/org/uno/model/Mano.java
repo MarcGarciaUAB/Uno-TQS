@@ -25,19 +25,16 @@ public class Mano {
     mano.remove(carta);
   }
 
-  public boolean tieneCartaJugable(Carta cartaMesa) {
+  public boolean tieneCartaJugable(Carta cartaMesa, String colorActual) {
     for (Carta c : mano) {
 
       //Carta especial, siempre se puede jugar
       if (c.getColor().equals("Negro")) {
         return true;
       }
-      if (c.mismoColor(cartaMesa)) {
-        return true;
-      }
-      if (c.mismoValor(cartaMesa)) {
-        return true;
-      }
+      if (c.getColor().equals(colorActual)) return true;
+
+      if (c.mismoValor(cartaMesa)) return true;
     }
     return false;
   }

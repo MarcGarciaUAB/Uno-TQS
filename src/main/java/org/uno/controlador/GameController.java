@@ -20,15 +20,11 @@ public class GameController {
       this.jugadores = jugadores;
     }
 
-  public boolean getSentidoHorario(){return this.sentidoHorario;}
-
-  public Mano getJugadorActual() {
-    return jugadores.get(turnoActual);
-  }
-
-  public String getColorActual() {
-    return colorActual;
-  }
+  public boolean getSentidoHorario() { return this.sentidoHorario; }
+  public Mano getJugadorActual() { return jugadores.get(turnoActual); }
+  public List<Mano> getJugadores() { return jugadores; }
+  public Carta getUltimaCarta() { return pila.ultimaCarta(); }
+  public String getColorActual() { return colorActual; }
 
   public void siguienteJugador() {
     if (sentidoHorario) {
@@ -39,25 +35,79 @@ public class GameController {
       turnoActual = (turnoActual - 1 + jugadores.size()) % jugadores.size();
     }
   }
+
+  public void iniciarPila(Carta cartaInicial) {
+    pila.jugarCarta(cartaInicial);
+
+    if (!"Negro".equals(cartaInicial.getColor())) {
+      colorActual = cartaInicial.getColor();
+    } else {
+      // Si la carta inicial es negra, se elige un color aleatorio:
+      int rand = (int) (Math.random() * 4); // 0,1,2,3
+      switch (rand) {
+        case 0 -> colorActual = "Rojo";
+        case 1 -> colorActual = "Azul";
+        case 2 -> colorActual = "Verde";
+        case 3 -> colorActual = "Amarillo";
+      }
+    }
+  }
+
+
   public boolean esCartaValida(Carta carta, Mano jugador) {
     //hay que asegurarse que las cartas negras sean jugables
-    if ("Negro".equals(carta.getColor())) return true;
     Carta cartaEnPila = pila.ultimaCarta();
-    if (!jugador.tieneCartaJugable(cartaEnPila)) return false;
+    if ("Negro".equals(carta.getColor())) return true;
+    if (!jugador.tieneCartaJugable(cartaEnPila, this.getColorActual())) return false;
 
     //hay que mirar primero si ha habido cambio de color
     if (colorActual != null && !colorActual.isEmpty()) {
       return carta.getColor().equals(colorActual) || carta.mismoValor(cartaEnPila);
     }
-    //si no ha habido cambio de color se usa el de la pila (deberia ser el mismo que la pila pero el primer turno es null)
+    //si no ha habido cambio de color se usa el de la pila (deberia ser el mismo que la pila pero el primer turno es null, se iniciará)
     return carta.mismoColor(cartaEnPila) || carta.mismoValor(cartaEnPila);
+  }
+
+  //nueva función para poder jugar que no sea el bot.
+  public boolean jugarCarta(Mano jugador, int indiceCarta, String colorElegido){
+    Carta c = jugador.getMano().get(indiceCarta);
+    if (!esCartaValida(c, jugador)) return false;
+
+    jugador.eliminarCarta(c);
+    pila.jugarCarta(c);
+
+    if ("Negro".equals(c.getColor()) && colorElegido != null){
+      colorActual = colorElegido;
+    } else {
+      colorActual = c.getColor();
+    }
+
+    aplicarEfecto(c, jugador);
+    return true;
+  }
+
+  public Carta robarCarta(Mano jugador) {
+    Carta robada = baraja.robar();
+    if (robada == null) {
+      List<Carta> cartasPila = new ArrayList<>(pila.getPila());
+      if (!cartasPila.isEmpty()) {
+        baraja.añadirCartas(cartasPila);
+        pila.vaciar();
+        baraja.barajar();
+        robada = baraja.robar();
+      }
+    }
+    if (robada != null) {
+      jugador.añadirCarta(robada);
+    }
+    return robada;
   }
 
 
   public void cambiarColor(String color) {
     this.colorActual = color;
   }
-
+//update: esta funcion es solo para bots.
   public boolean jugarTurno(Mano jugador) {
     for (Carta c : jugador.getMano()) {
       if (esCartaValida(c, jugador)) {
@@ -70,9 +120,8 @@ public class GameController {
           colorActual = c.getColor();
         }
         else {
-          if (jugador != jugadores.get(0)) {
             colorActual = elegirColorBot(jugador);
-          }
+
         }
 
         return true;

@@ -54,12 +54,12 @@ class ManoTest {
 @Test
   void testTieneCartaJugablePorColor() {
     Carta cartaMesa = new Carta(3, "Rojo");
+    String color = "Rojo";
 
     mano.añadirCarta(cincoRojo);
     mano.añadirCarta(sieteAzul);
-
     //la primera carta debería ser jugable por color
-    assertTrue(mano.tieneCartaJugable(cartaMesa));
+    assertTrue(mano.tieneCartaJugable(cartaMesa, color));
   }
 
   @Test
@@ -67,28 +67,31 @@ class ManoTest {
     Carta cartaMesa = cincoVerde;
 
     mano.añadirCarta(cincoRojo);
+    String color = "Rojo";
 
     //la carta debería ser jugable por valor
-    assertTrue(mano.tieneCartaJugable(cartaMesa));
+    assertTrue(mano.tieneCartaJugable(cartaMesa, color));
   }
 
   @Test
   void testNoTieneCartaJugable() {
     Carta cartaMesa = new Carta(9, "Amarillo");
+    String color = "Amarillo";
 
     mano.añadirCarta(cincoRojo);
     mano.añadirCarta(sieteAzul);
 
-    assertFalse(mano.tieneCartaJugable(cartaMesa));
+    assertFalse(mano.tieneCartaJugable(cartaMesa, color));
   }
 
   @Test
   void testTieneCartaEspecial() {
     Carta cartaMesa = cincoRojo;
+    String color = "Rojo";
 
     mano.añadirCarta(especial);
 
     //una carta de efecto (en este caso cambio de color) SIEMPRE es jugable.
-    assertTrue(mano.tieneCartaJugable(cartaMesa));
+    assertTrue(mano.tieneCartaJugable(cartaMesa, color));
   }
 }

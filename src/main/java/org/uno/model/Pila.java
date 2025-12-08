@@ -19,7 +19,9 @@ public class Pila {
   public void vaciar() {
     pila.clear();
   }
-  public Carta ultimaCarta(){
-    return pila.getLast();
+  public Carta ultimaCarta() {
+    if (pila.isEmpty()) return null;
+    return pila.get(pila.size() - 1);
   }
+
 }

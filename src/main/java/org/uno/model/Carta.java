@@ -41,7 +41,17 @@ public class Carta {
       return this.getColor().equals(carta1.getColor());
   }
   public boolean mismoValor(Carta carta1) {
-      return this.getValor() == carta1.getValor();
+    if (valor==-1)
+      return false;
+    return this.getValor() == carta1.getValor();
+  }
+  @Override
+  public String toString() {
+    if (efecto != null) {
+      return "[" + efecto + " - " + color + "]";
+    } else {
+      return "[" + valor + " - " + color + "]";
+    }
   }
 
 }
