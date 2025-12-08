@@ -4,13 +4,54 @@ public class Carta {
 
   private int valor;
   private String color;
+  //efectos disponibles: bloquear turno="Block", revertir orden="Reverse", sumar dos cartas="+2"
+  //efectos especiales: cambiar color="Change", sumar cuatro cartas y cambiar color="+4"
+  private String efecto;
+
+  public Carta (){
+    //el 0 es válido
+    this.valor = -1;
+    this.color = null;
+    this.efecto = null;
+  }
 
   public Carta (int v, String c){
+    this.valor = v;
+    this.color = c;
+    this.efecto = null;
   }
-  public void setValor(int v){};
-  public int getValor(){};
 
-  public void setColor(String c){};
-  public String getColor(){};
+  public Carta (String e, String c){
+    this.efecto = e;
+    this.color = c;
+    this.valor = -1;
+  }
+
+  public void setValor(int v){this.valor = v;};
+  public int getValor(){return this.valor;};
+
+  public void setColor(String c){ this.color = c;};
+  public String getColor(){return this.color;};
+
+  public void setEfecto(String e){ this.efecto = e;};
+  public String getEfecto(){return this.efecto;};
+
+  //para poder comprobar si la carta jugada es válida.
+  public boolean mismoColor(Carta carta1) {
+      return this.getColor().equals(carta1.getColor());
+  }
+  public boolean mismoValor(Carta carta1) {
+    if (valor==-1)
+      return false;
+    return this.getValor() == carta1.getValor();
+  }
+  @Override
+  public String toString() {
+    if (efecto != null) {
+      return "[" + efecto + " - " + color + "]";
+    } else {
+      return "[" + valor + " - " + color + "]";
+    }
+  }
 
 }

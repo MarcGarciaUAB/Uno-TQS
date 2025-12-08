@@ -1,4 +1,221 @@
 package org.uno.controlador;
 
+import org.uno.model.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class GameController {
+    private Baraja baraja;
+    private Pila pila;
+    private List<Mano> jugadores;
+    private int turnoActual = 0;
+    private boolean sentidoHorario = true;
+    private String colorActual = null;
+
+
+  public GameController(Baraja baraja, Pila pila, List<Mano> jugadores) {
+      this.baraja = baraja;
+      this.pila = pila;
+      this.jugadores = jugadores;
+    }
+
+  public boolean getSentidoHorario() { return this.sentidoHorario; }
+  public Mano getJugadorActual() { return jugadores.get(turnoActual); }
+  public List<Mano> getJugadores() { return jugadores; }
+  public Carta getUltimaCarta() { return pila.ultimaCarta(); }
+  public String getColorActual() { return colorActual; }
+
+  public void siguienteJugador() {
+    if (sentidoHorario) {
+      //si llega al final, vuelve a 0
+      turnoActual = (turnoActual + 1) % jugadores.size();
+    } else {
+      //para los cambios de sentido
+      turnoActual = (turnoActual - 1 + jugadores.size()) % jugadores.size();
+    }
+  }
+
+  public void iniciarPila(Carta cartaInicial) {
+    pila.jugarCarta(cartaInicial);
+
+    if (!"Negro".equals(cartaInicial.getColor())) {
+      colorActual = cartaInicial.getColor();
+    } else {
+      // Si la carta inicial es negra, se elige un color aleatorio:
+      int rand = (int) (Math.random() * 4); // 0,1,2,3
+      switch (rand) {
+        case 0 -> colorActual = "Rojo";
+        case 1 -> colorActual = "Azul";
+        case 2 -> colorActual = "Verde";
+        case 3 -> colorActual = "Amarillo";
+      }
+    }
+  }
+
+
+  public boolean esCartaValida(Carta carta, Mano jugador) {
+    //hay que asegurarse que las cartas negras sean jugables
+    Carta cartaEnPila = pila.ultimaCarta();
+    if ("Negro".equals(carta.getColor())) return true;
+    if (!jugador.tieneCartaJugable(cartaEnPila, this.getColorActual())) return false;
+
+    //hay que mirar primero si ha habido cambio de color
+    if (colorActual != null && !colorActual.isEmpty()) {
+      return carta.getColor().equals(colorActual) || carta.mismoValor(cartaEnPila);
+    }
+    //si no ha habido cambio de color se usa el de la pila (deberia ser el mismo que la pila pero el primer turno es null, se iniciará)
+    return carta.mismoColor(cartaEnPila) || carta.mismoValor(cartaEnPila);
+  }
+
+  //nueva función para poder jugar que no sea el bot.
+  public boolean jugarCarta(Mano jugador, int indiceCarta, String colorElegido){
+    Carta c = jugador.getMano().get(indiceCarta);
+    if (!esCartaValida(c, jugador)) return false;
+
+    jugador.eliminarCarta(c);
+    pila.jugarCarta(c);
+
+    if ("Negro".equals(c.getColor()) && colorElegido != null){
+      colorActual = colorElegido;
+    } else {
+      colorActual = c.getColor();
+    }
+
+    aplicarEfecto(c, jugador);
+    return true;
+  }
+
+  public Carta robarCarta(Mano jugador) {
+    Carta robada = baraja.robar();
+    if (robada == null && !pila.getPila().isEmpty()) {
+      reiniciarPila();
+      robada = baraja.robar();
+    }
+    if (robada != null) {
+      jugador.añadirCarta(robada);
+    }
+    return robada;
+  }
+
+
+
+  public void cambiarColor(String color) {
+    this.colorActual = color;
+  }
+
+  private void reiniciarPila() {
+    List<Carta> cartasPila = new ArrayList<>(pila.getPila());
+    if (cartasPila.size() <= 1) return; // nada que hacer si solo hay 1 carta
+    Carta ultima = pila.ultimaCarta();
+    cartasPila.remove(ultima);
+    baraja.añadirCartas(cartasPila);
+    pila.vaciar();
+    pila.jugarCarta(ultima);
+    // mantener colorActual igual que la última carta
+    if (!"Negro".equals(ultima.getColor())) {
+      colorActual = ultima.getColor();
+    }
+  }
+
+//update: esta funcion es solo para bots.
+  public boolean jugarTurno(Mano jugador) {
+    for (Carta c : jugador.getMano()) {
+      if (esCartaValida(c, jugador)) {
+        jugador.eliminarCarta(c);
+        pila.jugarCarta(c);
+        aplicarEfecto(c, jugador); //si es block, +2, etc. aplicar el efecto especial
+
+        //si la carta es negra hay que pedirsela al jugador
+        if (!c.getColor().equals("Negro")) {
+          colorActual = c.getColor();
+        }
+        else {
+            colorActual = elegirColorBot(jugador);
+
+        }
+
+        return true;
+      }
+    }
+    // Si no podia jugar, roba una carta
+    Carta robada = baraja.robar();
+    if (robada == null && !pila.getPila().isEmpty()) {
+      reiniciarPila();
+      robada = baraja.robar();
+    }
+    if (robada != null)
+      jugador.añadirCarta(robada);
+    return false;
+  }
+
+  public void aplicarEfecto(Carta carta, Mano jugador) {
+    if (carta.getEfecto() == null) return;
+
+    switch (carta.getEfecto()) {
+
+      case "Reverse":
+        sentidoHorario = !sentidoHorario;
+        break;
+
+      case "Block":
+        this.siguienteJugador();
+        break;
+
+      case "+2":
+        siguienteJugador();
+        jugadores.get(turnoActual).añadirCarta(baraja.robar());
+        jugadores.get(turnoActual).añadirCarta(baraja.robar());
+        break;
+
+      case "+4":
+        siguienteJugador();
+        for (int i = 0; i < 4; i++) {
+          jugadores.get(turnoActual).añadirCarta(baraja.robar());
+        }
+        break;
+    }
+  }
+
+  public Mano procesarTurnoPartida() {
+    Mano jugador = getJugadorActual();
+    boolean jugado = jugarTurno(jugador);
+
+    if (jugador.getNumeroCartas() == 0) {
+      return jugador;
+    }
+
+    siguienteJugador();
+    return null;
+  }
+
+  public boolean finJuego() {
+    for (Mano jugador : jugadores) {
+      if (jugador.getNumeroCartas() == 0) return true;
+    }
+    return false;
+  }
+
+
+  public String elegirColorBot(Mano jugador) {
+    int r = 0, b = 0, g = 0, y = 0;
+
+    for (Carta c : jugador.getMano()) {
+      switch (c.getColor()) {
+        case "Rojo":     r++; break;
+        case "Azul":     b++; break;
+        case "Verde":    g++; break;
+        case "Amarillo": y++; break;
+      }
+    }
+    //Math.max calcula el maximo entre dos elementos
+    int max = Math.max(Math.max(r, b), Math.max(g, y));
+
+    if (max == r) return "Rojo";
+    if (max == b) return "Azul";
+    if (max == g) return "Verde";
+    return "Amarillo";
+  }
+
+
 }
