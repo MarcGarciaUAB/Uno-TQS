@@ -177,4 +177,26 @@ public class GameControllerTest {
     assertEquals("Azul", controlador.getColorActual());
   }
 
+  // Los bots (jugador>=2) cambian el color al que más tengan
+  @Test
+  void testElegirColorAutomaticamente() {
+    // Jugador bot (jugador2)
+    jugador2.añadirCarta(new Carta(1, "Rojo"));
+    jugador2.añadirCarta(new Carta(3, "Rojo"));
+    jugador2.añadirCarta(new Carta(5, "Azul"));
+    jugador2.añadirCarta(new Carta(7, "Verde"));
+
+    Carta change = new Carta("Change", "Negro");
+    pila.jugarCarta(new Carta(4, "Amarillo"));// carta inicial en la pila
+    jugador2.añadirCarta(change);
+
+    controlador.siguienteJugador();//que el turno sea de jugador2
+    controlador.jugarTurno(jugador2);
+
+    //ahora deberá elegir automáticamente el rojo, ya que es el color mayoritario
+    controlador.cambiarColor(controlador.elegirColorBot(jugador2));
+
+    assertEquals("Rojo", controlador.getColorActual());
+  }
+
 }
