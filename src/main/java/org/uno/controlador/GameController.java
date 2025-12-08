@@ -121,8 +121,19 @@ public class GameController {
         }
         break;
     }
-
   }
+
+  public Mano procesarTurnoPartida() {
+    Mano jugador = getJugadorActual();
+    jugarTurno(jugador);
+    if (jugador.getNumeroCartas() == 0) {
+      return jugador;
+    }
+    siguienteJugador();
+    //por si no ha ganado nadie todavía, habrá una función de ganador más adelante.
+    return null;
+  }
+
   public String elegirColorBot(Mano jugador) {
     int r = 0, b = 0, g = 0, y = 0;
 
