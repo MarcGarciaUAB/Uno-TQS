@@ -197,4 +197,15 @@ public class GameControllerTest {
     assertEquals("Rojo", controlador.getColorActual());
   }
 
+  @Test
+  void testRondaCompletaJugadorGana() {
+    // Preparamos jugador1 con solo una carta jugable
+    Carta cartaFinal = new Carta(5, "Rojo");
+    jugador1.añadirCarta(cartaFinal);
+    pila.jugarCarta(new Carta(3, "Rojo"));
+
+    Mano ganador = controlador.procesarTurnoPartida();
+    assertEquals(jugador1, ganador);
+  }
+
 }
