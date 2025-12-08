@@ -130,9 +130,16 @@ public class GameController {
       return jugador;
     }
     siguienteJugador();
-    //por si no ha ganado nadie todavía, habrá una función de ganador más adelante.
+    //por si no ha ganado nadie todavía
     return null;
   }
+  public boolean finJuego() {
+    for (Mano jugador : jugadores) {
+      if (jugador.getNumeroCartas() == 0) return true;
+    }
+    return false;
+  }
+
 
   public String elegirColorBot(Mano jugador) {
     int r = 0, b = 0, g = 0, y = 0;
